@@ -1,2 +1,9 @@
-package com.challenge.repositories;public class ProductRepository {
+package com.challenge.repositories;
+
+import com.challenge.domain.product.Product;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ProductRepository extends MongoRepository<Product, String> {
 }
