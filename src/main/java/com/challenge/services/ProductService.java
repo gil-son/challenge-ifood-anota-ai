@@ -1,46 +1,55 @@
 package com.challenge.services;
 
-import com.challenge.domain.category.Category;
-import com.challenge.domain.category.CategoryDTO;
+
 import com.challenge.domain.category.exceptions.CategoryNotFoundException;
-import com.challenge.repositories.CategoryRepository;
+import com.challenge.domain.product.Product;
+import com.challenge.domain.product.ProductDTO;
+import com.challenge.domain.product.exceptions.ProductNotFoundException;
+import com.challenge.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class CategoryService {
+public class ProductService {
 
-    private CategoryRepository repository;
+    private CategoryService categoryService;
+    private ProductRepository productRepository;
 
-    public CategoryService(CategoryRepository repository){
-        this.repository = repository;
+    public ProductService(ProductRepository productRepository, CategoryService categoryService){
+        this.categoryService = categoryService;
+        this.productRepository = productRepository;
     }
 
-    public Category insert(CategoryDTO categoryData){
-        Category newCategory = new Category(categoryData);
-        this.repository.save(newCategory);
-        return newCategory;
+    public Product insert(ProductDTO productData){
+        Product newProduct = new Product(productData);
+        newProduct.setCategory(categoryService.getById(productData.categoryId()).orElseThrow(CategoryNotFoundException::new));
+        this.productRepository.save(newProduct);
+        return newProduct;
     }
 
-    public List<Category> getAll(){
-        return this.repository.findAll();
+    public List<Product> getAll(){
+        return this.productRepository.findAll();
     }
 
-    public Category update(String id, CategoryDTO categoryData){
-        Category category = this.repository.findById(id).orElseThrow(CategoryNotFoundException::new);
+    public Product update(String id, ProductDTO productData){
+        Product product = this.productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
 
-        if(!categoryData.title().isEmpty()) category.setTitle(categoryData.title());
-        if(!categoryData.description().isEmpty()) category.setDescription(categoryData.description());
+        if(productData.categoryId() != null) {
+            this.categoryService.getById(productData.categoryId()).ifPresent(product::setCategory);
+        }
+        
+        if(!productData.title().isEmpty()) product.setTitle(productData.title());
+        if(!productData.description().isEmpty()) product.setDescription(productData.description());
+        if(!(productData.price() == null)) product.setTitle(productData.title());
 
-        this.repository.save(category); // MongoDB has enough intelligence to check the id and updated
+        this.productRepository.save(product); // MongoDB has enough intelligence to check the id and updated
 
-        return category;
+        return product;
     }
-
 
     public void delete(String id){
-        Category category = this.repository.findById(id).orElseThrow(CategoryNotFoundException::new);
-        this.repository.delete(category); // MongoDB has enough intelligence to check the id and updated
+        Product product = this.productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+        this.productRepository.delete(product); // MongoDB has enough intelligence to check the id and updated
     }
 }
