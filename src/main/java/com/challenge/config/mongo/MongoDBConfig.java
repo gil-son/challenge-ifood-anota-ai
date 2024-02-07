@@ -11,9 +11,10 @@ public class MongoDBConfig {
 
     @Bean
     public MongoDatabaseFactory mongoConfigure(){
-        return new SimpleMongoClientDatabaseFactory("mongodb://localhost:27017/product-catalog");
+        return new SimpleMongoClientDatabaseFactory("mongodb://root:admin@127.0.0.1:27017/product-catalog?authSource=admin");
     }
 
+    @Bean
     public MongoTemplate mongoTemplate(){
         return new MongoTemplate(mongoConfigure());
     }
