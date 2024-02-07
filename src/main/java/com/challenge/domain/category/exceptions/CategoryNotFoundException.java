@@ -1,2 +1,5 @@
-package com.challenge.domain.category.exceptions;public class CategoryNotFoundException {
+package com.challenge.domain.category.exceptions;
+
+public class CategoryNotFoundException extends RuntimeException{
+
 }
