@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Files ###
+ide-user_accessKeys.csv
