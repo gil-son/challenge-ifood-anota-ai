@@ -4,6 +4,8 @@ import com.challenge.domain.category.Category;
 import com.challenge.domain.category.CategoryDTO;
 import com.challenge.domain.category.exceptions.CategoryNotFoundException;
 import com.challenge.repositories.CategoryRepository;
+import com.challenge.services.aws.AwsSnsService;
+import com.challenge.services.aws.MessageDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,14 +15,18 @@ import java.util.Optional;
 public class CategoryService {
 
     private CategoryRepository repository;
+    private final AwsSnsService snsService;
 
-    public CategoryService(CategoryRepository repository){
+    public CategoryService(CategoryRepository repository, AwsSnsService snsService){
         this.repository = repository;
+        this.snsService = snsService;
     }
 
     public Category insert(CategoryDTO categoryData){
         Category newCategory = new Category(categoryData);
         this.repository.save(newCategory);
+        System.out.println(newCategory.toString());
+        this.snsService.publish(new MessageDTO(newCategory.toString()));
         return newCategory;
     }
 
@@ -39,7 +45,7 @@ public class CategoryService {
         if(!categoryData.description().isEmpty()) category.setDescription(categoryData.description());
 
         this.repository.save(category); // MongoDB has enough intelligence to check the id and updated
-
+        this.snsService.publish(new MessageDTO(category.toString()));
         return category;
     }
 
