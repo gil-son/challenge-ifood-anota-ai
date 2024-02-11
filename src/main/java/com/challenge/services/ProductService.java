@@ -30,8 +30,8 @@ public class ProductService {
                 .orElseThrow(CategoryNotFoundException::new);
         Product newProduct = new Product(productData);
         this.productRepository.save(newProduct);
-        System.out.println(newProduct.toString());
         this.snsService.publish(new MessageDTO(newProduct.toString()));
+        System.out.println(newProduct.toString());
         return newProduct;
     }
 
@@ -54,12 +54,14 @@ public class ProductService {
         this.productRepository.save(product); // MongoDB has enough intelligence to check the id and updated
 
         this.snsService.publish(new MessageDTO(product.toString()));
-
+        System.out.println(product.toString());
         return product;
     }
 
     public void delete(String id){
         Product product = this.productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
         this.productRepository.delete(product); // MongoDB has enough intelligence to check the id and updated
+        this.snsService.publish(new MessageDTO(product.deleteToString(product.getId())));
+        System.out.println(product.deleteToString(product.getId()));
     }
 }

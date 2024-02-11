@@ -46,6 +46,7 @@ public class CategoryService {
 
         this.repository.save(category); // MongoDB has enough intelligence to check the id and updated
         this.snsService.publish(new MessageDTO(category.toString()));
+        System.out.println(category.toString());
         return category;
     }
 
@@ -53,5 +54,7 @@ public class CategoryService {
     public void delete(String id){
         Category category = this.repository.findById(id).orElseThrow(CategoryNotFoundException::new);
         this.repository.delete(category); // MongoDB has enough intelligence to check the id and updated
+        this.snsService.publish(new MessageDTO(category.deleteToString(category.getId())));
+        System.out.println(category.deleteToString(category.getId()));
     }
 }
