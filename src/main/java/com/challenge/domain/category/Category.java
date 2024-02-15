@@ -37,7 +37,7 @@ public class Category {
         return json.toString();
     }
 
-    public String deleteToString(String id){
+    public String deleteToString(){
         JSONObject json = new JSONObject();
         json.put("id", this.id);
         json.put("ownerId", this.ownerId);

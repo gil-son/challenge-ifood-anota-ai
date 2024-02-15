@@ -61,7 +61,6 @@ public class ProductService {
     public void delete(String id){
         Product product = this.productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
         this.productRepository.delete(product); // MongoDB has enough intelligence to check the id and updated
-        this.snsService.publish(new MessageDTO(product.deleteToString(product.getId())));
-        System.out.println(product.deleteToString(product.getId()));
+        this.snsService.publish(new MessageDTO(product.deleteToString()));
     }
 }
